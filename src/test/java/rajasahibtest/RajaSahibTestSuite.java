@@ -18,6 +18,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -38,28 +39,36 @@ public class RajaSahibTestSuite {
 	WebDriver driver;
 	boolean outOfStock = false;
 
-//	private void waitUntilSelectOptionsPopulated(final Select select) {
-//        new FluentWait<WebDriver>(driver)
-//                .withTimeout(60, TimeUnit.SECONDS)
-//                .pollingEvery(10, TimeUnit.MILLISECONDS)
-//                .until(new Predicate<WebDriver>() {
-//                    public boolean apply(WebDriver d) {
-//                        return (select.getOptions().size() > 1);
-//                    }
-//                });
-//    }
-	
+	//	private void waitUntilSelectOptionsPopulated(final Select select) {
+	//        new FluentWait<WebDriver>(driver)
+	//                .withTimeout(60, TimeUnit.SECONDS)
+	//                .pollingEvery(10, TimeUnit.MILLISECONDS)
+	//                .until(new Predicate<WebDriver>() {
+	//                    public boolean apply(WebDriver d) {
+	//                        return (select.getOptions().size() > 1);
+	//                    }
+	//                });
+	//    }
+
 	@BeforeTest
 	public void beforeTest() throws MalformedURLException {	
 
 		//PhantomJs Driver
-		System.setProperty("phantomjs.binary.path", "phantomjs");
-		String[] cli_args = new String[]{ "--ignore-ssl-errors=true" };
-		DesiredCapabilities caps = DesiredCapabilities.phantomjs();
-		caps.setCapability("takeScreenshot", "false");
-		caps.setCapability( PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cli_args );
-		caps.setCapability( PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "phantomjs");
-		this.driver =  new PhantomJSDriver( caps );
+		//System.setProperty("phantomjs.binary.path", "phantomjs");
+		//String[] cli_args = new String[]{ "--ignore-ssl-errors=true" };
+		//DesiredCapabilities caps = DesiredCapabilities.phantomjs();
+		//caps.setCapability("takeScreenshot", "false");
+		//caps.setCapability( PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cli_args );
+		//caps.setCapability( PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "phantomjs");
+		//driver =  new PhantomJSDriver( caps );
+
+		//chrome remote Driver
+		System.setProperty("webdriver.chrome.driver", "chromedriver");
+		ChromeOptions options = new ChromeOptions();
+		options.setBinary("/usr/bin/google-chrome");
+		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+		capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+		driver = new ChromeDriver(capabilities);
 
 		driver.manage().window().maximize();
 		//driver.manage().window().setSize(new Dimension(1920,1080));
@@ -93,7 +102,7 @@ public class RajaSahibTestSuite {
 		if(randomBrand==BrandNames.get(0))
 		{
 			//SELECT A RANDOM CATEGORY
-			List<WebElement> allCategories = driver.findElements(By.cssSelector("#Designer-Fabrics a.level0"));
+			List<WebElement> allCategories = driver.findElements(By.cssSelector("#Designer-Fabrics ul.level0 a.level1"));
 			System.out.println("print the allCategories.size() "+allCategories.size());
 			System.out.println("print the selected allCategories "+allCategories);
 			Random random2 = new Random();
@@ -104,7 +113,7 @@ public class RajaSahibTestSuite {
 			randomCategory.click();
 
 			System.out.println("Page title is: " + driver.getTitle());
-			
+
 			//SELECT A RANDOM PRODUCT	
 			List<WebElement> allProducts = driver.findElements(By.cssSelector("a.product-image"));
 			System.out.println("print the allProducts "+allProducts);
@@ -113,7 +122,7 @@ public class RajaSahibTestSuite {
 			WebElement randomProduct = allProducts.get(random3.nextInt(allProducts.size()));
 			randomProduct.click();
 			System.out.println("Random product is clicked");
-			
+
 			//Add To Cart
 			WebDriverWait waitProduct = new WebDriverWait(driver, 100);
 			waitProduct.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.button.btn-cart"))).click();
@@ -125,16 +134,16 @@ public class RajaSahibTestSuite {
 		else if(randomBrand==BrandNames.get(1))
 		{
 			//SELECT A RANDOM CATEGORY
-			List<WebElement> allCategories = driver.findElements(By.cssSelector("#Sale a.level0"));
+			List<WebElement> allCategories = driver.findElements(By.cssSelector("#Sale ul.level0 a.level1"));
 			System.out.println("print the allCategories.size() "+allCategories.size());
 			System.out.println("print the selected allCategories "+allCategories);
 			Random random2 = new Random();
 			WebElement randomCategory = allCategories.get(random2.nextInt(allCategories.size()));
 			System.out.println("print the selected randomCategory "+randomCategory);
 			randomCategory.click();
-			
+
 			System.out.println("Page title is: " + driver.getTitle());
-			
+
 			//SELECT A RANDOM PRODUCT	
 			List<WebElement> allProducts = driver.findElements(By.cssSelector("a.product-image"));
 			System.out.println("print the allProducts "+allProducts);
@@ -152,40 +161,40 @@ public class RajaSahibTestSuite {
 			WebDriverWait waitCheckOut=new WebDriverWait(driver,100);
 			waitCheckOut.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("PLACE ORDER"))).click();
 		}
-//		else 
-//			if(randomBrand==BrandNames.get(2))
-//			{		
-//			//SELECT A RANDOM CATEGORY
-//			List<WebElement> allCategories = driver.findElements(By.cssSelector("li#Brands ul.level0 a.level1"));
-//			System.out.println("print the allCategories.size() "+allCategories.size());
-//			System.out.println("print the selected product "+allCategories);
-//			Random random2 = new Random();
-//			WebElement randomCategory = allCategories.get(random2.nextInt(allCategories.size()));
-//			
-//			WebDriverWait wait = new WebDriverWait(driver, 100);
-//			wait.until(ExpectedConditions.visibilityOf(randomCategory));
-//			randomCategory.click();
-//
-////			Actions actions = new Actions(driver);
-////			actions.moveToElement(randomCategory).click().perform();
-//			
-//			System.out.println("Page title is: " + driver.getTitle());
-//
-//			//SELECT A RANDOM PRODUCT	
-//			List<WebElement> allProducts = driver.findElements(By.cssSelector("a.product-image"));
-//			System.out.println("Print the allProducts "+allProducts);
-//			System.out.println("Print the allProducts.size() "+allProducts.size());
-//			Random random3 = new Random();
-//			WebElement randomProduct = allProducts.get(random3.nextInt(allProducts.size()));
-//			randomProduct.click();
-//			System.out.println("print the selected randomCategory ");
-//
-//			WebDriverWait waitProduct = new WebDriverWait(driver, 100);
-//			waitProduct.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.button.btn-cart"))).click();
-//
-//			WebDriverWait waitCheckOut=new WebDriverWait(driver,100);
-//			waitCheckOut.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("PLACE ORDER"))).click();
-//		}
+		//		else 
+		//			if(randomBrand==BrandNames.get(2))
+		//			{		
+		//			//SELECT A RANDOM CATEGORY
+		//			List<WebElement> allCategories = driver.findElements(By.cssSelector("li#Brands ul.level0 a.level1"));
+		//			System.out.println("print the allCategories.size() "+allCategories.size());
+		//			System.out.println("print the selected product "+allCategories);
+		//			Random random2 = new Random();
+		//			WebElement randomCategory = allCategories.get(random2.nextInt(allCategories.size()));
+		//			
+		//			WebDriverWait wait = new WebDriverWait(driver, 100);
+		//			wait.until(ExpectedConditions.visibilityOf(randomCategory));
+		//			randomCategory.click();
+		//
+		////			Actions actions = new Actions(driver);
+		////			actions.moveToElement(randomCategory).click().perform();
+		//			
+		//			System.out.println("Page title is: " + driver.getTitle());
+		//
+		//			//SELECT A RANDOM PRODUCT	
+		//			List<WebElement> allProducts = driver.findElements(By.cssSelector("a.product-image"));
+		//			System.out.println("Print the allProducts "+allProducts);
+		//			System.out.println("Print the allProducts.size() "+allProducts.size());
+		//			Random random3 = new Random();
+		//			WebElement randomProduct = allProducts.get(random3.nextInt(allProducts.size()));
+		//			randomProduct.click();
+		//			System.out.println("print the selected randomCategory ");
+		//
+		//			WebDriverWait waitProduct = new WebDriverWait(driver, 100);
+		//			waitProduct.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.button.btn-cart"))).click();
+		//
+		//			WebDriverWait waitCheckOut=new WebDriverWait(driver,100);
+		//			waitCheckOut.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("PLACE ORDER"))).click();
+		//		}
 
 
 		//FILL IN THE BILLING INFORMATION
@@ -219,11 +228,11 @@ public class RajaSahibTestSuite {
 		Select oSelect3 = new Select(driver.findElement(By.xpath("//*[@id='billing:city']")));
 		oSelect3.selectByIndex(3);
 		System.out.println("City is Enterd");
-		
+
 		WebDriverWait billingRegion = new WebDriverWait(driver, 100);
 		billingRegion.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='billing:region']"))).sendKeys("03001234567");
 		System.out.println("billing Region is Enterd");
-		
+
 		WebDriverWait billingPostcode = new WebDriverWait(driver, 100);
 		billingPostcode.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='billing:postcode']"))).sendKeys("03001234567");
 		System.out.println("billing Postcode is Enterd");
@@ -233,13 +242,13 @@ public class RajaSahibTestSuite {
 
 		System.out.println("Phone number is Enterd");
 
-//		WebDriverWait waitTel2 = new WebDriverWait(driver, 100);
-//		waitTel2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='tel2']")));
-//
-//		WebElement ConfirmMobileNumber = driver.findElement(By.xpath("//*[@id='tel2']"));
-//
-//		ConfirmMobileNumber.sendKeys("03001234567");
-//		System.out.println("Phone number is confirmed");
+		//		WebDriverWait waitTel2 = new WebDriverWait(driver, 100);
+		//		waitTel2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='tel2']")));
+		//
+		//		WebElement ConfirmMobileNumber = driver.findElement(By.xpath("//*[@id='tel2']"));
+		//
+		//		ConfirmMobileNumber.sendKeys("03001234567");
+		//		System.out.println("Phone number is confirmed");
 
 		//driver.findElement(By.xpath("html/body/div[1]/div[3]/div/div/div[2]/div[3]/form/div/div[1]/div[2]/ul/li/input")).click();
 		//driver.findElement(By.xpath("//input[contains(@title,'Ship to this address')]")).click();
@@ -275,22 +284,22 @@ public class RajaSahibTestSuite {
 		Select oSelectc = new Select(driver.findElement(By.xpath("//*[@id='shipping:city']")));
 		oSelectc.selectByIndex(3);
 		System.out.println("Shipping City is Enterd");
-		
+
 		WebDriverWait shippingRegion = new WebDriverWait(driver, 100);
 		shippingRegion.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='shipping:region']"))).sendKeys("03001234567");
 		System.out.println("shipping Region is Enterd");
-		
+
 		WebDriverWait shippingPostcode = new WebDriverWait(driver, 100);
 		shippingPostcode.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='shipping:postcode']"))).sendKeys("03001234567");
 		System.out.println("shipping Postcode is Enterd");
-		
+
 		WebDriverWait waitPhoneNumbers = new WebDriverWait(driver, 50);
 		waitPhoneNumbers.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='shipping:telephone']"))).sendKeys("03001231231");
 		System.out.println("Shipping Phone number is Enterd");
 
-//		WebDriverWait waitTel2s = new WebDriverWait(driver, 50);
-//		waitTel2s.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='tel3']"))).sendKeys("03001231231");
-//		System.out.println("Shipping Phone number is confirmed");
+		//		WebDriverWait waitTel2s = new WebDriverWait(driver, 50);
+		//		waitTel2s.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='tel3']"))).sendKeys("03001231231");
+		//		System.out.println("Shipping Phone number is confirmed");
 
 		//SELECT CASH ON DELEIVERY
 		//*[@id="p_method_cashondelivery"]
